@@ -33,7 +33,7 @@ Complete guide for configuring all services in the media library management stac
 ### Application Configuration
 | Service | Status | Notes |
 |---------|--------|-------|
-| qBittorrent | ✅ Done | Password changed, categories set (sonarr, radarr) |
+| qBittorrent | ✅ Done | Password changed, VueTorrent UI enabled, categories set |
 | Sonarr | ✅ Done | Root folder /media/tv, download client configured |
 | Radarr | ✅ Done | Root folder /media/movies, download client configured |
 | Prowlarr | ✅ Done | Indexers added, linked to Sonarr/Radarr |
@@ -84,16 +84,24 @@ Complete guide for configuring all services in the media library management stac
    - Tools → Options → Web UI
    - Change password
    - Uncheck "Bypass authentication for clients on localhost"
-3. **Configure download paths**:
+3. **Enable VueTorrent UI** (recommended):
+   - Tools → Options → Web UI
+   - Check **"Use alternative Web UI"**
+   - Path: `/vuetorrent`
+   - Save
+
+   VueTorrent is a modern, mobile-friendly interface that's pre-installed via Docker Mod. The default qBittorrent UI is functional but has tiny buttons and doesn't work well on phones. VueTorrent provides responsive design, touch-friendly controls, dark mode, and PWA support (install as app on your phone).
+
+4. **Configure download paths**:
    - Tools → Options → Downloads
    - Default Save Path: `/downloads`
-4. **Create categories** (used by Sonarr/Radarr):
+5. **Create categories** (used by Sonarr/Radarr):
    - Right-click in left panel → Add Category
    - Name: `sonarr`, Save path: `/downloads/sonarr`
    - Name: `radarr`, Save path: `/downloads/radarr`
    - **Important**: Both Name AND Save path must be set
    - **Note**: qBittorrent doesn't allow renaming categories - delete and recreate if needed
-5. **Optional - Connection settings**:
+6. **Optional - Connection settings**:
    - Tools → Options → Connection
    - Disable UPnP (doesn't work behind VPN)
 

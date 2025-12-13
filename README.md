@@ -44,7 +44,7 @@ Claude understands the service networking, Traefik routing, deployment order, an
 |---------|-------------|------------|------------|
 | **Traefik** | Reverse proxy with automatic SSL | 8080 | traefik.yourdomain.com |
 | **Gluetun** | VPN gateway for network privacy | - | Internal |
-| **qBittorrent** | BitTorrent client | 8085 | qbit.yourdomain.com |
+| **qBittorrent** | BitTorrent client (VueTorrent UI included) | 8085 | qbit.yourdomain.com |
 | **Sonarr** | TV show library management | 8989 | sonarr.yourdomain.com |
 | **Radarr** | Movie library management | 7878 | radarr.yourdomain.com |
 | **Prowlarr** | Search aggregator | 9696 | prowlarr.yourdomain.com |

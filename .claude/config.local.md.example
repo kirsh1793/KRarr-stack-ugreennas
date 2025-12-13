@@ -59,14 +59,16 @@ Replace `yourdomain.com` with your actual domain:
 
 ## Local Access (when on home network)
 
+NAS LAN IP: `YOUR_NAS_LAN_IP` (or `your-nas.local`)
+
 | Service | URL |
 |---------|-----|
 | NAS Web UI | http://your-nas.local:8080 |
 | Jellyfin | http://your-nas.local:8096 |
-| Sonarr | http://192.168.100.3:8989 |
-| Radarr | http://192.168.100.3:7878 |
-| Prowlarr | http://192.168.100.3:9696 |
-| qBittorrent | http://192.168.100.3:8085 |
+| Sonarr | http://your-nas.local:8989 |
+| Radarr | http://your-nas.local:7878 |
+| Prowlarr | http://your-nas.local:9696 |
+| qBittorrent | http://your-nas.local:8085 |
 
 ## VPN
 
