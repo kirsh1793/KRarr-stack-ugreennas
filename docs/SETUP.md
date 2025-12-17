@@ -262,7 +262,7 @@ For local-only access, skip this section and use URLs like `http://NAS_IP:8096`.
 
 Cloudflare Tunnel connects outbound from your server, bypassing port forwarding and ISP restrictions. This setup uses the CLI and a local config file (not the Cloudflare web dashboard) for wildcard DNS routing - only 2 DNS records for all services.
 
-**1. Login to Cloudflare:**
+**1. Login to Cloudflare (run on NAS via SSH):**
 
 ```bash
 cd /volume1/docker/arr-stack
