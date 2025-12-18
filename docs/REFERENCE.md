@@ -54,20 +54,20 @@ docker compose -f docker-compose.arr-stack.yml down
 | traefik-proxy | 192.168.100.0/24 | Service communication |
 | vpn-net | 10.8.1.0/24 | Internal VPN routing |
 
-## IP Allocation (traefik-proxy)
+## IP Allocation (traefik-proxy: 192.168.100.x)
 
-| IP | Service |
-|----|---------|
-| .1 | Gateway |
-| .2 | Traefik |
-| .3 | Gluetun |
-| .4 | Jellyfin |
-| .5 | Pi-hole |
-| .6 | WireGuard |
-| .8 | Jellyseerr |
-| .9 | Bazarr |
-| .10 | FlareSolverr |
-| .12 | Cloudflared |
-| .13 | Uptime Kuma* |
+| IP | Service | Notes |
+|----|---------|-------|
+| .1 | Gateway | |
+| .2 | Traefik | |
+| .3 | Gluetun | **Use for qBittorrent in Sonarr/Radarr** |
+| .4 | Jellyfin | |
+| .5 | Pi-hole | |
+| .6 | WireGuard | |
+| .8 | Jellyseerr/Overseerr | |
+| .9 | Bazarr | |
+| .10 | FlareSolverr | |
+| .12 | Cloudflared | Optional |
+| .13 | Uptime Kuma | Optional (utilities.yml) |
 
-*Optional (utilities.yml)
+> **Tip:** qBittorrent runs inside Gluetun's network, so when configuring download clients in Sonarr/Radarr, use host `gluetun` or IP `192.168.100.3` (not localhost or qbittorrent).

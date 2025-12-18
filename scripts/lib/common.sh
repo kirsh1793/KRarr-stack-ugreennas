@@ -179,7 +179,7 @@ is_ssh_available() {
     timeout 2 bash -c "exec 3<>/dev/tcp/$nas_host/22" 2>/dev/null
 }
 
-# Run SSH command on NAS
+# Run SSH command on NAS (with timeout to prevent hanging)
 # Args: $1 = command to run
 # Returns: command output, or empty on failure
 ssh_to_nas() {
@@ -189,8 +189,9 @@ ssh_to_nas() {
     nas_user=$(get_nas_user)
 
     if [[ -n "$NAS_SSH_PASS" ]] && command -v sshpass &>/dev/null; then
-        sshpass -p "$NAS_SSH_PASS" ssh $SSH_OPTS "$nas_user@$nas_host" "$cmd" 2>/dev/null
+        timeout 10 sshpass -p "$NAS_SSH_PASS" ssh $SSH_OPTS "$nas_user@$nas_host" "$cmd" 2>/dev/null
     else
-        ssh $SSH_OPTS -o PreferredAuthentications=publickey -o IdentitiesOnly=yes "$nas_user@$nas_host" "$cmd" 2>/dev/null
+        # Use BatchMode for non-interactive, but allow SSH agent keys
+        timeout 10 ssh $SSH_OPTS "$nas_user@$nas_host" "$cmd" 2>/dev/null
     fi
 }

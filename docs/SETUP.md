@@ -476,7 +476,7 @@ docker exec gluetun wget -qO- ifconfig.me
 1. **Access:** `http://HOST_IP:8989`
 2. **Add Root Folder:** Settings → Media Management → `/tv`
 3. **Add Download Client:** Settings → Download Clients → qBittorrent
-   - Host: `gluetun` (important - not localhost!)
+   - Host: `gluetun` or `192.168.100.3` (not localhost!)
    - Port: `8085`
    - Category: `sonarr`
 
@@ -485,7 +485,7 @@ docker exec gluetun wget -qO- ifconfig.me
 1. **Access:** `http://HOST_IP:7878`
 2. **Add Root Folder:** Settings → Media Management → `/movies`
 3. **Add Download Client:** Settings → Download Clients → qBittorrent
-   - Host: `gluetun`
+   - Host: `gluetun` or `192.168.100.3`
    - Port: `8085`
    - Category: `radarr`
 
