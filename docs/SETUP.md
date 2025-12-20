@@ -509,13 +509,17 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
 ### 5.3 Prowlarr (Indexer Manager)
 
 1. **Access:** `http://HOST_IP:9696`
-2. **Add Indexers:** Settings → Indexers → Add Indexer
+2. **Add Torrent Indexers:** Indexers (left sidebar) → + button → search by name
 3. **Add Usenet Indexer** (if using SABnzbd):
-   - Settings → Indexers → Add Indexer → Search "Newznab"
-   - Select generic "Newznab" (works for NZBGeek, DrunkenSlug, etc.)
-   - URL: `https://nzbgeek.info` or `https://drunkenslug.com`
-   - API Key: (from your indexer account profile page)
+   - **Indexers** (left sidebar, NOT Settings → Indexer Proxies) → + button
+   - Search by indexer name (e.g., "NZBGeek", "DrunkenSlug", "NZBFinder")
+   - API Key: (from your indexer account → API section)
+   - **Tags:** leave blank (syncs to all apps)
+   - **Indexer Proxy:** leave blank (not needed for Usenet)
    - Test → Save
+
+   > **Tested with:** NZBGeek (~$12/year, reliable). Free alternatives: DrunkenSlug, NZBFinder.
+
 4. **Add FlareSolverr** (for protected torrent sites):
    - Settings → Indexers → Add FlareSolverr
    - Host: `http://flaresolverr:8191` (or `http://192.168.100.10:8191` if hostname fails)
@@ -525,8 +529,8 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
    - Settings → Apps → Add → Sonarr
    - Sonarr Server: `http://localhost:8989` (they share gluetun's network)
    - API Key: (from Sonarr → Settings → General → Security)
-5. **Connect to Radarr:** Same process with `http://localhost:7878`
-6. **Sync:** Settings → Apps → Sync App Indexers
+6. **Connect to Radarr:** Same process with `http://localhost:7878`
+7. **Sync:** Settings → Apps → Sync App Indexers
 
 ### 5.4 Sonarr (TV Shows)
 
@@ -566,7 +570,20 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
    - API Key: (from SABnzbd Config → General)
    - Category: `movies` (default category in SABnzbd)
 
-### 5.6 Jellyfin (Media Server)
+### 5.6 Prefer Usenet over Torrents (Optional)
+
+If you have both qBittorrent and SABnzbd configured, Sonarr/Radarr will grab whichever is available first. To prefer Usenet (faster, no seeding):
+
+1. Settings → Profiles → Delay Profiles
+2. Click the **wrench/spanner icon** on the existing profile (don't click +)
+3. Set: **Usenet Delay:** `0` minutes, **Torrent Delay:** `30` minutes
+4. Save
+
+This gives Usenet a 30-minute head start before considering torrents.
+
+> **Note:** Repeat in both Sonarr and Radarr if you want consistent behavior.
+
+### 5.7 Jellyfin (Media Server)
 
 1. **Access:** `http://HOST_IP:8096`
 2. **Initial Setup:** Create admin account
@@ -574,7 +591,7 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
    - Movies: Content type "Movies", Folder `/media/movies`
    - TV Shows: Content type "Shows", Folder `/media/tv`
 
-### 5.7 Jellyseerr (Request Manager)
+### 5.8 Jellyseerr (Request Manager)
 
 1. **Access:** `http://HOST_IP:5055`
 2. **Sign in with Jellyfin:**
@@ -584,7 +601,7 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
    - Settings → Services → Add Sonarr: `http://gluetun:8989` (Sonarr runs via gluetun)
    - Settings → Services → Add Radarr: `http://gluetun:7878` (Radarr runs via gluetun)
 
-### 5.8 Bazarr (Subtitles)
+### 5.9 Bazarr (Subtitles)
 
 1. **Access:** `http://HOST_IP:6767`
 2. **Enable Authentication:** Settings → General → Security → Forms
@@ -592,7 +609,7 @@ Skip this if you only want torrents. SABnzbd provides Usenet downloads as an alt
 4. **Connect to Radarr:** Settings → Radarr → `http://gluetun:7878` (Radarr runs via gluetun)
 5. **Add Providers:** Settings → Providers (OpenSubtitles, etc.)
 
-### 5.9 Pi-hole (DNS/Ad-blocking)
+### 5.10 Pi-hole (DNS/Ad-blocking)
 
 1. **Access:** `http://HOST_IP:8081/admin`
 2. **Login:** Use password from `PIHOLE_UI_PASS` (password only, no username)
