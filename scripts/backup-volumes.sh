@@ -123,7 +123,7 @@ for suffix in "${VOLUME_SUFFIXES[@]}"; do
 
     # Copy files and fix ownership in one container run
     # The chown ensures we can tar without sudo later
-    if docker run --rm \
+    if docker run --rm --name arr-backup-worker \
       -v "$vol":/source:ro \
       -v "$BACKUP_DIR":/backup \
       alpine sh -c "mkdir -p /backup/$suffix && cp -a /source/. /backup/$suffix/ && chown -R $CURRENT_UID:$CURRENT_GID /backup/$suffix" 2>/dev/null; then
