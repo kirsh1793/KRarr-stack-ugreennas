@@ -633,11 +633,7 @@ This gives Usenet a 30-minute head start before considering torrents.
 2. **Login:** Use password from `PIHOLE_UI_PASS` (password only, no username)
 3. **Configure DNS:** Settings → DNS → Upstream: 1.1.1.1, 1.0.0.1
 
-**Network-wide ad-blocking:** Set your router's DHCP DNS to your host IP.
-
-> ⚠️ **DNS Dependency Warning:** If you configure your router to use Pi-hole as DNS and Pi-hole goes down, your entire network loses DNS (no internet). Keep your NAS IP address written down somewhere accessible offline. To recover: connect to mobile hotspot, SSH to NAS using IP (not hostname), run `docker compose up -d`.
-
-⚠️ **Security:** Admin services are local-only by default, but still recommend enabling authentication on Sonarr, Radarr, Prowlarr, Bazarr, and qBittorrent.
+**Network-wide ad-blocking:** Set your router's DHCP DNS to your NAS IP. Note: if Pi-hole goes down, your network loses DNS. Keep your NAS IP written down for recovery (see [Troubleshooting](TROUBLESHOOTING.md#network-goes-down-when-pi-hole-stops)).
 
 ### 5.11 Local DNS (.lan domains) — Optional
 
