@@ -1,6 +1,6 @@
-# Updating the Stack
+# Upgrading the Stack
 
-Already running an earlier version? There are two types of updates:
+Already running an earlier version? There are two types of upgrades:
 
 1. **Stack updates** — New features, bug fixes, compose changes from this repo
 2. **Container image updates** — Newer versions of Sonarr, Radarr, Jellyfin, etc.
@@ -35,6 +35,49 @@ docker compose -f docker-compose.arr-stack.yml up -d  # Restarts containers with
 ## Migration Notes
 
 When upgrading across versions, check below for any action required.
+
+### v1.2.x → v1.3
+
+**Breaking change:** Docker network subnet changed from `192.168.100.0/24` to `172.20.0.0/24`.
+
+Run the full migration as a single chained command to minimize DNS downtime:
+
+```bash
+cd /volume1/docker/arr-stack && \
+git pull origin main && \
+docker compose -f docker-compose.arr-stack.yml down && \
+docker compose -f docker-compose.utilities.yml down 2>/dev/null; \
+docker compose -f docker-compose.cloudflared.yml down 2>/dev/null; \
+docker compose -f docker-compose.traefik.yml down && \
+docker network rm traefik-proxy && \
+docker network create --driver=bridge --subnet=172.20.0.0/24 --gateway=172.20.0.1 traefik-proxy && \
+docker compose -f docker-compose.traefik.yml up -d && \
+docker compose -f docker-compose.arr-stack.yml up -d && \
+docker compose -f docker-compose.cloudflared.yml up -d 2>/dev/null; \
+docker compose -f docker-compose.utilities.yml up -d 2>/dev/null; \
+echo "Migration complete"
+```
+
+> **Other containers on traefik-proxy?** If you have containers from other compose files using this network (e.g., Frigate), stop them first, then update their compose files to use `172.20.0.x` IPs before restarting.
+
+> **Why the change?** The new `172.20.0.0/24` subnet is a Docker-conventional range, less likely to conflict with home LANs (which often use `192.168.x.x`).
+
+**New features:**
+
+| Feature | What it does |
+|---------|--------------|
+| Jellyfin discovery ports | Apps auto-detect Jellyfin on LAN (7359/udp, 1900/udp) |
+| "Adding More Services" docs | Example for adding Lidarr, Readarr, etc. |
+
+**Documentation improvements:**
+
+- README simplified (services table moved to SETUP.md)
+- SETUP.md restructured with Stack Overview section
+- Section headings now action-oriented
+- Consistent `flaresolverr.lan` usage throughout
+- TROUBLESHOOTING.md removed (notes consolidated into SETUP.md)
+
+---
 
 ### v1.1 → v1.2.x
 

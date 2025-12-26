@@ -1,136 +1,44 @@
-# Media Automation Stack
+# Pharkie's Ultimate Arr Stack for Ugreen and Beyond
 
 [![GitHub release](https://img.shields.io/github/v/release/Pharkie/arr-stack-ugreennas)](https://github.com/Pharkie/arr-stack-ugreennas/releases)
 
-A Docker Compose stack for automated media management. Request a TV show or movie, and it downloads, organizes, and appears in Jellyfin ready to watch—all routed through a VPN.
+<img align="right" width="45%" src="docs/images/demo/demo.gif">
 
-Sonarr (TV) and Radarr (movies) handle fetching. Prowlarr manages your indexers. qBittorrent and SABnzbd cover both torrents and Usenet. Bazarr fetches subtitles automatically. Jellyseerr gives family, housemates, or friends a way to browse and request titles.
+A Docker Compose stack for automated media management. Request a show or movie, it downloads and appears in Jellyfin—ready to watch, VPN-protected.
 
-Gluetun routes downloads through your VPN provider. Traefik manages SSL certificates and local `.lan` domains (`http://sonarr.lan`, `http://jellyfin.lan`—no port numbers to remember). Pi-hole blocks ads, and health checks auto-restart crashed services. WireGuard lets you stream from anywhere—hotel, holiday, wherever—without geo-restrictions. Cloudflare Tunnel handles secure external access to Jellyfin without exposing your home IP.
+Works on Ugreen, Synology, QNAP, or any Docker host.
 
-Developed and tested on Ugreen NAS (DXP4800+) but should work on Synology, QNAP, or any Docker host. Plex variant included; swap VPN providers via environment variables.
+<br clear="right">
 
-> If this project helped you, help others find the repo by giving it a ⭐ or buy me a Ko-fi:
->
-> <a href='https://ko-fi.com/X8X01NIXRB' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+## Why "Ultimate"?
 
-## Legal Notice
-
-This project provides configuration files for **legal, open-source software** designed for managing personal media libraries. All included tools have legitimate purposes - see **[LEGAL.md](docs/LEGAL.md)** for details on intended use, user responsibilities, and disclaimer.
-
----
-
-## Documentation
-
-| Doc | Purpose |
-|-----|---------|
-| **[Setup Guide](docs/SETUP.md)** | Step-by-step deployment |
-| [Quick Reference](docs/REFERENCE.md) | URLs, commands, IPs |
-| [Updating](docs/UPDATING.md) | Pull updates, redeploy |
-| [Backup & Restore](docs/BACKUP.md) | Backup configs, restore |
-| [Home Assistant](docs/HOME-ASSISTANT.md) | Notifications integration |
-| [Legal](docs/LEGAL.md) | Intended use, disclaimer |
+- **Everything you need** — Jellyfin (media server), Sonarr (TV), Radarr (movies), Prowlarr (indexers), Bazarr (subtitles), Jellyseerr (requests), qBittorrent (torrents), SABnzbd (Usenet), Pi-hole (ad-blocking DNS for your network), WireGuard (remote access), Cloudflare Tunnel (external access). Easy to add or remove.
+- **Flexible** — Plex variant included. Supports 30+ VPN providers (Surfshark, NordVPN, PIA, Mullvad, ProtonVPN, etc.).
+- **Step-by-step setup guide** — Not just a docker-compose file in a repo.
+- **Privacy by default** — All downloads route through your VPN. No IP leaks.
 
 <details>
-<summary>Using Claude Code for guided setup</summary>
+<summary>Technical features</summary>
 
-[Claude Code](https://docs.anthropic.com/en/docs/claude-code) can walk you through deployment, executing commands and troubleshooting as you go. Works in terminal, VS Code, or Cursor.
-
-```bash
-npm install -g @anthropic-ai/claude-code
-cd arr-stack-ugreennas && claude
-```
-
-Ask Claude to help deploy the stack - it reads [`.claude/instructions.md`](.claude/instructions.md) automatically.
+- **Local `.lan` domains** — `http://sonarr.lan` instead of port numbers
+- **Auto-recovery** — Services restart when VPN reconnects
+- **Production healthchecks** — Not just "is the process running?"
+- **One-command backup script** — Essential configs to ~13MB
+- **Pre-commit hooks** — For contributors: validates secrets, YAML, port conflicts
 
 </details>
 
+## Get Started
+
+**[Setup Guide →](docs/SETUP.md)**
+
+## Support
+
+If this project helped you, give it a ⭐ to help others find it, or buy me a coffee:
+
+<a href='https://ko-fi.com/X8X01NIXRB' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 ---
-
-## Features
-
-**Core Stack**
-- **VPN-protected networking** via Gluetun (supports 30+ providers)
-- **Automated SSL/TLS** certificates via Traefik + Cloudflare
-- **Media library management** with Sonarr, Radarr, Prowlarr, Bazarr
-- **Media streaming** with Jellyfin (or Plex variant available)
-- **Request management** with Jellyseerr (or Overseerr for Plex)
-- **Remote access** via WireGuard VPN server
-- **Ad-blocking DNS** with Pi-hole
-- **Configurable paths** via `MEDIA_ROOT` env var (works on any NAS/server)
-
-**Operational**
-- **Backup script** for essential configs (~13MB) - auto-detects setup variant
-- **Auto-recovery** restarts services when VPN reconnects (deunhealth)
-- **Service monitoring** with Uptime Kuma dashboard
-- **Torrent scheduler** pauses downloads overnight for NAS disk spin-down
-- **Docker named volumes** for portable, self-contained configs
-
-**For Contributors**
-- **Pre-commit hooks** validate secrets, YAML syntax, port conflicts, and more
-- **Claude Code ready** - includes instructions for AI-assisted deployment and troubleshooting
-- See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
-
-## Services
-
-### `docker-compose.traefik.yml` - Infrastructure
-
-| Service | Description | Local Port | Domain URL |
-|---------|-------------|------------|------------|
-| **Traefik** | Reverse proxy with automatic SSL | 8080, 8443, 9090 | traefik.yourdomain.com |
-
-### `docker-compose.cloudflared.yml` - External Access *(optional - for remote access)*
-
-| Service | Description | Local Port | Domain URL |
-|---------|-------------|------------|------------|
-| **Cloudflared** | Cloudflare Tunnel for remote access | - | Internal |
-
-### `docker-compose.arr-stack.yml` - Media Stack
-
-**User-facing services** (local + remote access if configured):
-
-| Service | Description | Local | Remote (if configured) |
-|---------|-------------|-------|------------------------|
-| **Jellyfin** | Media streaming server | NAS_IP:8096 | jellyfin.yourdomain.com |
-| **Jellyseerr** | Media request system | NAS_IP:5055 | jellyseerr.yourdomain.com |
-| **WireGuard** | VPN server for remote access | NAS_IP:51820/udp | wg.yourdomain.com |
-
-**Admin services** (local-only for security):
-
-| Service | Description | Local |
-|---------|-------------|-------|
-| **Gluetun** | VPN gateway for network privacy | - |
-| **qBittorrent** | BitTorrent client (VueTorrent UI) | NAS_IP:8085 |
-| **SABnzbd** | Usenet download client (via VPN) | NAS_IP:8082 |
-| **Sonarr** | TV show library management | NAS_IP:8989 |
-| **Radarr** | Movie library management | NAS_IP:7878 |
-| **Prowlarr** | Search aggregator | NAS_IP:9696 |
-| **Bazarr** | Subtitle management | NAS_IP:6767 |
-| **Pi-hole** | DNS + Ad-blocking | NAS_IP:8081 |
-| **FlareSolverr** | CAPTCHA solver | NAS_IP:8191 |
-
-> **Don't need all these?** Remove any service by deleting its section from the compose file. Core dependency: Gluetun (VPN gateway).
->
-> **Prefer Plex?** See `docker-compose.plex-arr-stack.yml` for an untested Plex/Overseerr variant.
-
-### `docker-compose.utilities.yml` - Optional Utilities
-
-| Service | Description | Local | Remote |
-|---------|-------------|-------|--------|
-| **deunhealth** | Auto-restart services if VPN drops and recovers | - | - |
-| **Uptime Kuma** | Service monitoring dashboard | NAS_IP:3001 | Via WireGuard |
-| **duc** | Disk usage analyzer (treemap UI) | NAS_IP:8838 | Via WireGuard |
-| **qbit-scheduler** | Pauses torrents overnight (20:00-06:00) for disk spin-down | - | - |
-
-## Alternative Providers
-
-**VPN:** Configured for Surfshark but Gluetun supports 30+ providers (NordVPN, PIA, Mullvad, etc.). See [Gluetun providers](https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers).
-
-**DNS/SSL:** Configured for Cloudflare (DNS + Tunnel). Other providers work with modifications to Traefik config. See [Traefik ACME docs](https://doc.traefik.io/traefik/https/acme/).
-
-## Security
-
-Admin services (Sonarr, Radarr, etc.) are local-only by design - not exposed via Cloudflare Tunnel. Still recommend enabling auth.
 
 ## License
 
@@ -140,8 +48,6 @@ Documentation, configuration files, and examples in this repository are licensed
 
 Forked from [TheRealCodeVoyage/arr-stack-setup-with-pihole](https://github.com/TheRealCodeVoyage/arr-stack-setup-with-pihole). Thanks to [@benjamin-awd](https://github.com/benjamin-awd) for VPN config improvements.
 
----
+## Legal Notice
 
-> If this project helped you, help others find the repo by giving it a ⭐ or buy me a Ko-fi:
->
-> <a href='https://ko-fi.com/X8X01NIXRB' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+This project provides configuration files for **legal, open-source software** designed for managing personal media libraries. All included tools have legitimate purposes - see **[LEGAL.md](docs/LEGAL.md)** for details on intended use, user responsibilities, and disclaimer.

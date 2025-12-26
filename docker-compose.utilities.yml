@@ -68,7 +68,7 @@ services:
       - TZ=${TZ:-Europe/London}
     networks:
       traefik-proxy:
-        ipv4_address: 192.168.100.13  # For monitoring other containers
+        ipv4_address: 172.20.0.13  # For monitoring other containers
     volumes:
       - uptime-kuma-data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker container monitoring
@@ -87,11 +87,14 @@ services:
   # Re-indexes daily at 4am. Manual re-index: docker restart duc
   #
   # SECURITY: No authentication - local-only access
-  # Local access: http://NAS_IP:8838
+  # Local access: http://duc.lan or http://NAS_IP:8838
   # Remote access: Connect via WireGuard VPN first
   duc:
     image: mkoestler/duc-service:latest
     container_name: duc
+    networks:
+      traefik-proxy:
+        ipv4_address: 172.20.0.14
     volumes:
       - /volume1:/scan/volume1:ro      # NAS data (read-only)
       - duc-index:/database            # Persistent index

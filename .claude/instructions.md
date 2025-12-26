@@ -164,13 +164,13 @@ docker exec pihole sed -n '129p' /etc/pihole/pihole.toml
 
 **Docker services for VPN-routed containers**: Add to Pi-hole so Prowlarr/Sonarr/Radarr can resolve them:
 ```
-192.168.100.10 flaresolverr
+172.20.0.10 flaresolverr.lan
 ```
 
 ## Architecture
 
 - **3 compose files**: traefik (infra), arr-stack (apps), cloudflared (tunnel)
-- **Network**: traefik-proxy (192.168.100.0/24), static IPs for all services
+- **Network**: traefik-proxy (172.20.0.0/24), static IPs for all services
 - **External access**: Cloudflare Tunnel (bypasses CGNAT)
 
 ## Adding Services
@@ -185,10 +185,10 @@ docker exec pihole sed -n '129p' /etc/pihole/pihole.toml
 | Service | Note |
 |---------|------|
 | Pi-hole | v6 API uses password not separate token |
-| Gluetun | VPN gateway. Services using it share IP 192.168.100.3. Uses Pi-hole DNS. `FIREWALL_OUTBOUND_SUBNETS` must include LAN for HA access |
+| Gluetun | VPN gateway. Services using it share IP 172.20.0.3. Uses Pi-hole DNS. `FIREWALL_OUTBOUND_SUBNETS` must include LAN for HA access |
 | Cloudflared | SSL terminated at Cloudflare, Traefik receives HTTP |
 | wg-easy | Generate hash: `docker run --rm ghcr.io/wg-easy/wg-easy wgpw 'PASSWORD'` |
-| FlareSolverr | Cloudflare bypass for Prowlarr. Configure in Prowlarr: Settings → Indexers → add FlareSolverr with Host `flaresolverr` |
+| FlareSolverr | Cloudflare bypass for Prowlarr. Configure in Prowlarr: Settings → Indexers → add FlareSolverr with Host `flaresolverr.lan` |
 
 ## Container Updates
 
@@ -260,7 +260,7 @@ docker restart uptime-kuma
 
 For HTTPS with self-signed cert or 401 auth page: `ignore_tls=1`, `accepted_statuscodes_json='[\"200-299\",\"401\"]'`
 
-**Note:** Services using `network_mode: service:gluetun` (qBittorrent, Sonarr, etc.) should use Gluetun's static IP (`192.168.100.3`) in Uptime Kuma, not the hostname.
+**Note:** Services using `network_mode: service:gluetun` (qBittorrent, Sonarr, etc.) should use Gluetun's static IP (`172.20.0.3`) in Uptime Kuma, not the hostname.
 
 ## Bash Script Gotchas
 
@@ -302,7 +302,7 @@ http:
     frigate-lan:
       loadBalancer:
         servers:
-          - url: "http://192.168.100.30:5000"
+          - url: "http://172.20.0.30:5000"
 ```
 
 **3. Deploy**:
@@ -326,3 +326,18 @@ TRAEFIK_DASHBOARD_AUTH=admin:$2y$05$abc...
 WG_PASSWORD_HASH='$2a$12$abc...'
 TRAEFIK_DASHBOARD_AUTH='admin:$2y$05$abc...'
 ```
+
+## GitHub Releases
+
+When creating release notes:
+- Link to `docs/UPGRADING.md` for upgrade instructions instead of inline steps
+- Keep notes concise - bullet points, not paragraphs
+- Don't mention Reddit/community feedback as motivation for changes
+
+When updating a release tag to a new commit:
+1. Delete the GitHub release first: `gh release delete v1.x`
+2. Delete and recreate the tag: `git tag -d v1.x && git tag v1.x`
+3. Push tag: `git push origin :refs/tags/v1.x && git push origin v1.x`
+4. Create new release: `gh release create v1.x --title "..." --notes "..."`
+
+**Never** just move the tag - this orphans the release and breaks the GitHub UI.
